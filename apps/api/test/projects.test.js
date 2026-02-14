@@ -35,7 +35,7 @@ describe("Projects API", () => {
         expect(res.body).toEqual({ id: 1, name: "Replace name" });
     })
 
-    test("DELETE /tasks delete the project", async () => {
+    test("DELETE /projects delete the project", async () => {
         const setupRes = await request(app).post("/projects").send({ name: "Create project" });
         expect(setupRes.status).toBe(201);
         expect(setupRes.body).toEqual({ id: 1, name: "Create project" });
