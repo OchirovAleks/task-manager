@@ -1,54 +1,45 @@
 const express = require("express");
+const { createTaskStore } = require('../store/tasksStore');
+
 
 function createTasksRouter() {
   const router = express.Router();
+  const store = createTaskStore();
 
-  const tasks = [];
 
   router.get("/", (req, res) => {
-    res.json(tasks);
+    res.json(store.getAllTasks());
   });
 
   router.post("/", (req, res) => {
     const { title } = req.body;
-
     if (!title) {
       return res.status(400).json({ error: "Title is required" });
     }
-
-    const newTask = { id: tasks.length + 1, title };
-    tasks.push(newTask);
-
-    res.status(201).json(newTask);
+    const created = store.createTask(title);
+    res.status(201).json(created);
   });
 
   router.delete("/:id", (req, res) => {
     const id = Number(req.params.id);
-    const index = tasks.findIndex(t => t.id === id);
-
-    if (index === -1) {
+    const deleted = store.deleteTask(id);
+    if (!deleted) {
       return res.status(404).json({ error: "Task not found" });
     }
-
-    tasks.splice(index, 1);
     res.status(204).send();
   });
 
   router.patch("/:id", (req, res) => {
     const id = Number(req.params.id);
     const { title } = req.body;
-
-    const index = tasks.findIndex(t => t.id === id);
-
-    if (index === -1) {
-      return res.status(404).json({ error: "Task not found" });
+    if (!title) {
+      return res.status(400).json({ error: "Title is requared" });
     }
-
-    if (title) {
-      tasks[index].title = title;
+    const updated = store.updateTask(id, title);
+    if (!updated) {
+      return res.status(404).json({ error: "Task not found" })
     }
-
-    res.status(200).json(tasks[index]);
+    res.status(200).json(updated);
   });
 
   return router;
