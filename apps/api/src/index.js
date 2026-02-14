@@ -1,11 +1,6 @@
-const express = require("express"); 
+const { createApp } = require("./app");
 
-const tasksRouter = require('./routes/tasks');
-
-
-const app = express();
-app.use(express.json());
-app.use('/tasks', tasksRouter);
+const app = createApp();
 const PORT = 3001;
 
 app.listen(PORT, () => {
