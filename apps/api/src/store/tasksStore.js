@@ -27,13 +27,24 @@ function createTaskStore() {
         return tasks.filter(task => task.projectId === Number(projectId));
     }
 
+    const deleteTasksByProjectId = (projectId) => {
+        let removed = 0;
+        for(let i = tasks.length-1; i >= 0; i--){
+            if(tasks[i].projectId === projectId){
+                tasks.splice(i, 1);
+                removed++
+            }
+        }
+        return removed;
+    }
 
     return {
         getAllTasks,
         createTask,
         updateTask,
         deleteTask,
-        getTasksByProjectId
+        getTasksByProjectId,
+        deleteTasksByProjectId
     }
 }
 

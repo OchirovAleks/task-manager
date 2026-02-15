@@ -21,11 +21,12 @@ function createProjectRouter(){
     })
 
     router.delete("/:id", (req, res) => {
-        const id = Number(req.params.id);
-        const deleted = store.deleteProject(id);
+        const projectId = Number(req.params.id);
+        const deleted = store.deleteProject(projectId);
         if(!deleted){
             return res.status(404).json({error: "Project not found"});
         }
+        tasksStore.deleteTasksByProjectId(projectId)
         return res.status(204).send();
     })
 
