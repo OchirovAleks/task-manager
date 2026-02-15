@@ -45,4 +45,26 @@ describe("Projects API", () => {
         expect(assertRes.status).toBe(200);
         expect(assertRes.body).toEqual([]);
     })
+
+    test("POST /projects/:projectId/tasks creates a task in project", async () => {
+        const setupRes = await request(app).post("/projects").send({name: "Create project"});
+        expect(setupRes.status).toBe(201);
+        expect(setupRes.body).toEqual({id: 1, name: "Create project"});
+        const res = await request(app).post("/projects/1/tasks").send({title: "Create task"});
+        expect(res.status).toBe(201);
+        expect(res.body).toEqual({id: 1, title: "Create task", projectId: 1});
+    })
+
+    test("GET /projects/:projectId/tasks returns all tasks for project", async () => {
+        await request(app).post("/projects").send({name: "Setup project"})
+        await request(app).post("/projects/1/tasks").send({title: "Setup task 1"});
+        await request(app).post("/projects/1/tasks").send({title: "Setup task 2"});
+        const assertRes = await request(app).get("/projects/1/tasks");
+        expect(assertRes.status).toBe(200);
+        expect(assertRes.body.length).toBe(2);
+        expect(assertRes.body[0].id).toBe(1);
+        expect(assertRes.body[1].id).toBe(2);
+        expect(assertRes.body[0].projectId).toBe(1);
+        expect(assertRes.body[1].projectId).toBe(1);
+    })
 });

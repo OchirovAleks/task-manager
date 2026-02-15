@@ -3,8 +3,8 @@ function createTaskStore() {
     const tasks = [];
     const getAllTasks = () => [...tasks];
 
-    const createTask = (title) => {
-        const newTask = { id: tasks.length + 1, title };
+    const createTask = (title, projectId = null) => {
+        const newTask = { id: tasks.length + 1, title, projectId};
         tasks.push(newTask);
         return newTask;
     };
@@ -22,11 +22,18 @@ function createTaskStore() {
         if (title) tasks[index].title = title;
         return tasks[index];
     };
+
+    const getTasksByProjectId = (projectId) => {
+        return tasks.filter(task => task.projectId === Number(projectId));
+    }
+
+
     return {
         getAllTasks,
         createTask,
         updateTask,
-        deleteTask
+        deleteTask,
+        getTasksByProjectId
     }
 }
 

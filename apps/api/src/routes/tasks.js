@@ -8,7 +8,7 @@ function createTasksRouter() {
 
 
   router.get("/", (req, res) => {
-    res.json(store.getAllTasks());
+    return res.json(store.getAllTasks());
   });
 
   router.post("/", (req, res) => {
@@ -17,7 +17,7 @@ function createTasksRouter() {
       return res.status(400).json({ error: "Title is required" });
     }
     const created = store.createTask(title);
-    res.status(201).json(created);
+    return res.status(201).json(created);
   });
 
   router.delete("/:id", (req, res) => {
@@ -26,7 +26,7 @@ function createTasksRouter() {
     if (!deleted) {
       return res.status(404).json({ error: "Task not found" });
     }
-    res.status(204).send();
+    return res.status(204).send();
   });
 
   router.patch("/:id", (req, res) => {
@@ -39,7 +39,7 @@ function createTasksRouter() {
     if (!updated) {
       return res.status(404).json({ error: "Task not found" })
     }
-    res.status(200).json(updated);
+    return res.status(200).json(updated);
   });
 
   return router;
