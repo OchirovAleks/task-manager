@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
@@ -6,6 +6,7 @@ function App() {
   const [projectName, setProjectName] = useState("");
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [taskTitle, setTaskTitle] = useState("");
 
   const loadProjects = async () => {
     const res = await fetch("/api/projects");
@@ -25,14 +26,48 @@ function App() {
     await loadProjects();
   };
 
-  const loadTasks = async () => {
-    if(!selectedProjectId) return;
+  const deleteTask = async (taskId) => {
+    const res = await fetch(`/api/tasks/${taskId}`, {method: "DELETE"});
+    if (!res.ok) return;
+    await loadTasks();
+  };
 
+  const loadTasks = async () => {
+    if (selectedProjectId === null) {
+      setTasks([]);
+      return
+    };
     const res = await fetch(`/api/projects/${selectedProjectId}/tasks`);
+    if (!res.ok) {
+      setTasks([]);
+      return;
+    }
     const data = await res.json();
+    if (Array.isArray(data)) {
+      setTasks(data);
+    } else {
+      setTasks([]);
+    }
 
     setTasks(data)
   };
+
+  const createTaskInProject = async () => {
+    if (selectedProjectId === null) return;
+    if (!taskTitle.trim()) return;
+
+    await fetch(`/api/projects/${selectedProjectId}/tasks`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: taskTitle })
+    })
+    setTaskTitle("");
+    await loadTasks();
+  }
+
+  useEffect(() => {
+    loadTasks();
+  }, [selectedProjectId]);
 
 
   return (
@@ -45,9 +80,11 @@ function App() {
       <button onClick={createProject}>Create project</button>
       <button onClick={loadProjects}>Load projects</button>
 
-      <ul>
+      <ul><h3>Projects</h3>
         {projects.map(p => (
-          <li onClick={() => setSelectedProjectId(p.id)} key={p.id}>{p.name}</li>
+          <li onClick={() => {
+            setSelectedProjectId(p.id);
+          }} key={p.id}>{p.id === selectedProjectId ? "👉 " : ""}{p.name}</li>
         ))}
       </ul>
       <p>
@@ -55,6 +92,34 @@ function App() {
           ? "No project selected"
           : `Selected: ${selectedProjectId}`}
       </p>
+      {selectedProjectId !== null &&
+        <div>
+          <input
+            value={taskTitle}
+            onChange={(e) => setTaskTitle(e.target.value)}
+            placeholder='Task name'
+          />
+          <button onClick={createTaskInProject}>Create task</button>
+        </div>
+      }
+      <ul>
+        <h3>Tasks</h3>
+        {selectedProjectId === null && <p>Select a project</p>}
+        {selectedProjectId !== null && tasks.length === 0 &&
+          <p>No tasks yet</p>
+        }
+        {selectedProjectId !== null && tasks.length !== 0 &&
+          <div>
+            <ul>
+              {tasks.map(t => (
+                <li key={t.id}>
+                  #{t.id} — {t.title} <button onClick={() => deleteTask(t.id)}>Delete task</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        }
+      </ul>
     </div>
   )
 }

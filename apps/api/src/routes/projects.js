@@ -1,14 +1,10 @@
 const express = require("express");
-const {createProjectStore} = require("../store/projectsStore");
-const {createTaskStore} = require("../store/tasksStore")
 
-function createProjectRouter(){
+function createProjectRouter(projectStore, taskStore){
     const router = express.Router();
-    const store = createProjectStore();
-    const tasksStore = createTaskStore();
 
     router.get("/", (req, res) => {
-        return res.json(store.getAllProjects());
+        return res.json(projectStore.getAllProjects());
     });
 
     router.post("/", (req, res) => {
@@ -16,17 +12,17 @@ function createProjectRouter(){
         if(!name){
             return res.status(400).json({ error: "Name is required" });
         };
-        const created = store.createProject(name);
+        const created = projectStore.createProject(name);
         return res.status(201).json(created);
     })
 
     router.delete("/:id", (req, res) => {
         const projectId = Number(req.params.id);
-        const deleted = store.deleteProject(projectId);
+        const deleted = projectStore.deleteProject(projectId);
         if(!deleted){
             return res.status(404).json({error: "Project not found"});
         }
-        tasksStore.deleteTasksByProjectId(projectId)
+        taskStore.deleteTasksByProjectId(projectId)
         return res.status(204).send();
     })
 
@@ -36,7 +32,7 @@ function createProjectRouter(){
         if(!name){
             return res.status(400).json({error: "Name is required"});
         }
-        const updated = store.updateProject(id, name);
+        const updated = projectStore.updateProject(id, name);
         if(!updated){
             return res.status(404).json({error: "Project not found"})
         }
@@ -45,7 +41,7 @@ function createProjectRouter(){
 
     router.post("/:projectId/tasks", (req, res) => {
         const projectId = Number(req.params.projectId);
-        const project = store.getAllProjects().find(project => project.id === projectId);
+        const project = projectStore.getAllProjects().find(project => project.id === projectId);
         if(!project){
             return res.status(404).json({error: "Project not found"});
         }
@@ -53,17 +49,17 @@ function createProjectRouter(){
         if(!title){
             return res.status(400).json({error: "Title is required"})
         }
-        const created = tasksStore.createTask(title, projectId);
+        const created = taskStore.createTask(title, projectId);
         return res.status(201).json(created);
     })
 
     router.get("/:projectId/tasks", (req, res) => {
         const projectId = Number(req.params.projectId);
-        const project = store.getAllProjects().find(project => project.id === projectId);
+        const project = projectStore.getAllProjects().find(project => project.id === projectId);
         if(!project){
             return res.status(404).json({error: "Project not found"});
         }
-        return res.status(200).json(tasksStore.getTasksByProjectId(projectId));
+        return res.status(200).json(taskStore.getTasksByProjectId(projectId));
     })
 
     return router;

@@ -1,14 +1,12 @@
 const express = require("express");
-const { createTaskStore } = require('../store/tasksStore');
 
 
-function createTasksRouter() {
+function createTasksRouter(taskStore) {
   const router = express.Router();
-  const store = createTaskStore();
 
 
   router.get("/", (req, res) => {
-    return res.json(store.getAllTasks());
+    return res.json(taskStore.getAllTasks());
   });
 
   router.post("/", (req, res) => {
@@ -16,13 +14,13 @@ function createTasksRouter() {
     if (!title) {
       return res.status(400).json({ error: "Title is required" });
     }
-    const created = store.createTask(title);
+    const created = taskStore.createTask(title);
     return res.status(201).json(created);
   });
 
   router.delete("/:id", (req, res) => {
     const id = Number(req.params.id);
-    const deleted = store.deleteTask(id);
+    const deleted = taskStore.deleteTask(id);
     if (!deleted) {
       return res.status(404).json({ error: "Task not found" });
     }
@@ -35,7 +33,7 @@ function createTasksRouter() {
     if (!title) {
       return res.status(400).json({ error: "Title is requared" });
     }
-    const updated = store.updateTask(id, title);
+    const updated = taskStore.updateTask(id, title);
     if (!updated) {
       return res.status(404).json({ error: "Task not found" })
     }
