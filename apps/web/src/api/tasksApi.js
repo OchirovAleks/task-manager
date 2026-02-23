@@ -1,0 +1,32 @@
+export async function loadTasks(projectId){
+    const res = await fetch(`/api/projects/${projectId}/tasks`);
+    if (!res.ok) return null
+    return await res.json();
+};
+
+
+export async function createTaskInProject(projectId, title){
+    const res = await fetch(`/api/projects/${projectId}/tasks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title })
+    });
+    if (!res.ok) return null;
+    return await res.json();
+}
+
+export async function saveTask(taskId, title){
+    const res = await fetch(`/api/tasks/${taskId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title })
+    })
+    if (!res.ok) return null;
+    return await res.json();
+};
+
+export async function deleteTask(taskId){
+    const res = await fetch(`/api/tasks/${taskId}`, { method: "DELETE" });
+    if (!res.ok) return false;
+    return true;
+};

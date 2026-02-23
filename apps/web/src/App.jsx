@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
+import * as projectsApi from "./api/projectsApi";
+import * as tasksApi from "./api/tasksApi";
 import './App.css'
 
 function App() {
@@ -12,44 +14,17 @@ function App() {
   const inputRef = useRef(null);
 
   const loadProjects = async () => {
-    const res = await fetch("/api/projects");
-    const data = await res.json();
+    const data = await projectsApi.loadProjects();
+    if(!data) return;
     setProjects(data);
-  };
-
-  const saveTask = async (taskId) => {
-    if (taskId === null || !editingTitle.trim()) return;
-    const res = await fetch(`/api/tasks/${taskId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: editingTitle })
-    })
-    if (!res.ok) return;
-    setTasks(prev => prev.map(t => {
-      return t.id === taskId ? { ...t, title: editingTitle } : t;
-    }));
-    setEditingTaskId(null);
-    setEditingTitle('');
   };
 
   const createProject = async () => {
     if (!projectName.trim()) return;
-
-    const res = await fetch("/api/projects", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: projectName }),
-    });
-    if (!res.ok) return;
-    const createdProject = await res.json();
+    const createdProject = await projectsApi.createProject(projectName);
+    if(!createdProject) return;
     setProjects(prev => [...prev, createdProject]);
     setProjectName("");
-  };
-
-  const deleteTask = async (taskId) => {
-    const res = await fetch(`/api/tasks/${taskId}`, { method: "DELETE" });
-    if (!res.ok) return;
-    setTasks(prev => prev.filter(t => t.id !== taskId))
   };
 
   const loadTasks = async () => {
@@ -57,12 +32,7 @@ function App() {
       setTasks([]);
       return;
     };
-    const res = await fetch(`/api/projects/${selectedProjectId}/tasks`);
-    if (!res.ok) {
-      setTasks([]);
-      return;
-    }
-    const data = await res.json();
+    const data = await tasksApi.loadTasks(selectedProjectId);
     if (Array.isArray(data)) {
       setTasks(data);
     } else {
@@ -70,17 +40,28 @@ function App() {
     }
   };
 
+  const saveTask = async (taskId) => {
+    if (taskId === null || !editingTitle.trim()) return;
+    const updatedTask = await tasksApi.saveTask(taskId, editingTitle);
+    if(!updatedTask) return;
+    setTasks(prev => prev.map(t => {
+      return t.id === taskId ? { ...t, title: editingTitle } : t;
+    }));
+    setEditingTaskId(null);
+    setEditingTitle('');
+  };
+
+  const deleteTask = async (taskId) => {
+    const ok = await tasksApi.deleteTask(taskId);
+    if(!ok) return;
+    setTasks(prev => prev.filter(t => t.id !== taskId))
+  };
+
   const createTaskInProject = async () => {
     if (selectedProjectId === null) return;
     if (!taskTitle.trim()) return;
-
-    const res = await fetch(`/api/projects/${selectedProjectId}/tasks`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: taskTitle })
-    });
-    if (!res.ok) return;
-    const createdTask = await res.json();
+    const createdTask = await tasksApi.createTaskInProject(selectedProjectId, taskTitle);
+    if(!createdTask) return;
     if (createdTask.projectId === selectedProjectId) {
       setTasks(prev => [...prev, createdTask]);
     }
