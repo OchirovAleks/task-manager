@@ -1,31 +1,18 @@
-import { useState, useEffect, useRef } from 'react'
-import * as projectsApi from "./api/projectsApi";
+import { useState, useEffect, useRef } from 'react';
+import { useProjects } from "./hooks/useProjects";
+import ProjectsPanel from "./components/ProjectsPanel";
 import * as tasksApi from "./api/tasksApi";
 import './App.css'
 
 function App() {
-  const [projects, setProjects] = useState([]);
-  const [projectName, setProjectName] = useState("");
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [taskTitle, setTaskTitle] = useState("");
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editingTitle, setEditingTitle] = useState("");
   const inputRef = useRef(null);
+  const projectsState = useProjects();
 
-  const loadProjects = async () => {
-    const data = await projectsApi.loadProjects();
-    if(!data) return;
-    setProjects(data);
-  };
-
-  const createProject = async () => {
-    if (!projectName.trim()) return;
-    const createdProject = await projectsApi.createProject(projectName);
-    if(!createdProject) return;
-    setProjects(prev => [...prev, createdProject]);
-    setProjectName("");
-  };
 
   const loadTasks = async () => {
     if (selectedProjectId === null) {
@@ -43,7 +30,7 @@ function App() {
   const saveTask = async (taskId) => {
     if (taskId === null || !editingTitle.trim()) return;
     const updatedTask = await tasksApi.saveTask(taskId, editingTitle);
-    if(!updatedTask) return;
+    if (!updatedTask) return;
     setTasks(prev => prev.map(t => {
       return t.id === taskId ? { ...t, title: editingTitle } : t;
     }));
@@ -53,7 +40,7 @@ function App() {
 
   const deleteTask = async (taskId) => {
     const ok = await tasksApi.deleteTask(taskId);
-    if(!ok) return;
+    if (!ok) return;
     setTasks(prev => prev.filter(t => t.id !== taskId))
   };
 
@@ -61,7 +48,7 @@ function App() {
     if (selectedProjectId === null) return;
     if (!taskTitle.trim()) return;
     const createdTask = await tasksApi.createTaskInProject(selectedProjectId, taskTitle);
-    if(!createdTask) return;
+    if (!createdTask) return;
     if (createdTask.projectId === selectedProjectId) {
       setTasks(prev => [...prev, createdTask]);
     }
@@ -81,21 +68,17 @@ function App() {
 
   return (
     <div>
-      <input
-        value={projectName}
-        onChange={(e) => setProjectName(e.target.value)}
-        placeholder="Project name"
-      />
-      <button onClick={createProject}>Create project</button>
-      <button onClick={loadProjects}>Load projects</button>
-
-      <ul><h3>Projects</h3>
-        {projects.map(p => (
-          <li onClick={() => {
-            setSelectedProjectId(p.id);
-          }} key={p.id}>{p.id === selectedProjectId ? "👉 " : ""}{p.name}</li>
-        ))}
-      </ul>
+      <div>
+        <ProjectsPanel
+          projects={projectsState.projects}
+          projectName={projectsState.projectName}
+          setProjectName={projectsState.setProjectName}
+          createProject={projectsState.createProject}
+          loadProjects={projectsState.loadProjects}
+          selectedProjectId={selectedProjectId}
+          setSelectedProjectId={setSelectedProjectId}
+        />
+      </div>
       <p>
         {selectedProjectId === null
           ? "No project selected"
