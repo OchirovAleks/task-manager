@@ -25,34 +25,37 @@ function App() {
       body: JSON.stringify({ title: editingTitle })
     })
     if (!res.ok) return;
+    setTasks(prev => prev.map(t => {
+      return t.id === taskId ? { ...t, title: editingTitle } : t;
+    }));
     setEditingTaskId(null);
     setEditingTitle('');
-    await loadTasks();
   };
 
   const createProject = async () => {
     if (!projectName.trim()) return;
 
-    await fetch("/api/projects", {
+    const res = await fetch("/api/projects", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: projectName }),
     });
-
+    if (!res.ok) return;
+    const createdProject = await res.json();
+    setProjects(prev => [...prev, createdProject]);
     setProjectName("");
-    await loadProjects();
   };
 
   const deleteTask = async (taskId) => {
     const res = await fetch(`/api/tasks/${taskId}`, { method: "DELETE" });
     if (!res.ok) return;
-    await loadTasks();
+    setTasks(prev => prev.filter(t => t.id !== taskId))
   };
 
   const loadTasks = async () => {
     if (selectedProjectId === null) {
       setTasks([]);
-      return
+      return;
     };
     const res = await fetch(`/api/projects/${selectedProjectId}/tasks`);
     if (!res.ok) {
@@ -65,21 +68,23 @@ function App() {
     } else {
       setTasks([]);
     }
-
-    setTasks(data)
   };
 
   const createTaskInProject = async () => {
     if (selectedProjectId === null) return;
     if (!taskTitle.trim()) return;
 
-    await fetch(`/api/projects/${selectedProjectId}/tasks`, {
+    const res = await fetch(`/api/projects/${selectedProjectId}/tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: taskTitle })
-    })
+    });
+    if (!res.ok) return;
+    const createdTask = await res.json();
+    if (createdTask.projectId === selectedProjectId) {
+      setTasks(prev => [...prev, createdTask]);
+    }
     setTaskTitle("");
-    await loadTasks();
   }
 
   useEffect(() => {
