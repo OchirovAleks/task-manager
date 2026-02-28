@@ -9,15 +9,15 @@ function TasksPanel({
     setEditingTaskId,
     editingTitle,
     setEditingTitle,
-    saveTask,
+    updateTask,
     deleteTask
 }) {
     const inputRef = useRef(null);
     useEffect(() => {
         if (editingTaskId !== null) {
-          inputRef.current?.focus();
+            inputRef.current?.focus();
         }
-      }, [editingTaskId]);
+    }, [editingTaskId]);
     return (
         <div>
             {selectedProjectId !== null &&
@@ -56,7 +56,7 @@ function TasksPanel({
                                             value={editingTitle}
                                             onChange={(e) => setEditingTitle(e.target.value)}
                                             onKeyDown={(e) => {
-                                                if (e.key === "Enter") saveTask(t.id);
+                                                if (e.key === "Enter") upodateTask(t.id);
                                                 if (e.key === "Escape") {
                                                     setEditingTaskId(null);
                                                     setEditingTitle("");
@@ -64,7 +64,7 @@ function TasksPanel({
                                             }}
                                         ></input>
                                         <button onClick={() => {
-                                            saveTask(t.id)
+                                            updateTask(t.id)
                                         }}
                                         >Save</button>
                                         <button onClick={() => {

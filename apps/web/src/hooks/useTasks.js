@@ -20,9 +20,9 @@ export function useTasks(selectedProjectId) {
         }
     };
 
-    const saveTask = async (taskId) => {
+    const updateTask = async (taskId) => {
         if (taskId === null || !editingTitle.trim()) return;
-        const updatedTask = await tasksApi.saveTask(taskId, editingTitle);
+        const updatedTask = await tasksApi.updateTask(taskId, editingTitle);
         if (!updatedTask) return;
         setTasks(prev => prev.map(t => {
             return t.id === taskId ? { ...t, title: editingTitle } : t;
@@ -52,7 +52,7 @@ export function useTasks(selectedProjectId) {
     return {
         loadTasks,
         createTaskInProject,
-        saveTask,
+        updateTask,
         deleteTask,
         taskTitle,
         setTaskTitle,
