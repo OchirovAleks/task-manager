@@ -27,23 +27,23 @@ function App() {
 
   useEffect(() => { projectsState.loadProjects(); }, []);
   return (
-    <div className="app">
-      <div className="container">
-        <div className="header">
+    <div >
+      <div >
+        <div >
           <div>
-            <h1 className="title">Task Manager</h1>
-            <p className="subtitle">Projects & Tasks MVP</p>
+            <h1 >Task Manager</h1>
+            <p >Projects & Tasks MVP</p>
           </div>
 
-          <div className="status">
+          <div >
             {selectedProjectId === null
               ? "No project selected"
               : `Selected: ${selectedProject?.name}`}
           </div>
         </div>
 
-        <div className="grid">
-          <section className="card">
+        <div >
+          <section >
             <ProjectsPanel
               projects={projectsState.projects}
               projectName={projectsState.projectName}
@@ -62,7 +62,7 @@ function App() {
             />
           </section>
 
-          <section className="card">
+          <section >
             <TasksPanel
               selectedProjectId={selectedProjectId}
               tasks={tasksState.tasks}
