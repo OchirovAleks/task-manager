@@ -1,43 +1,43 @@
 const express = require("express");
 
 
-function createTasksRouter(taskStore) {
+function createTasksRouter(prisma) {
   const router = express.Router();
 
-
-  router.get("/", (req, res) => {
-    return res.json(taskStore.getAllTasks());
-  });
-
-  router.post("/", (req, res) => {
-    const { title } = req.body;
-    if (!title) {
-      return res.status(400).json({ error: "Title is required" });
+  router.delete("/:id", async (req, res) => {
+    const taskId = Number(req.params.id);
+    if (isNaN(taskId)) return res.status(400).json({ error: "Invalid task id" })
+    try {
+      const deleted = await prisma.task.delete({
+        where: { id: taskId }
+      })
+      return res.status(204).send()
+    } catch (e) {
+      if (e.code === "P2025") {
+        return res.status(404).json({ error: "Task not found" });
+      }
+      return res.status(500).json({error: "Internal server error"})
     }
-    const created = taskStore.createTask(title);
-    return res.status(201).json(created);
   });
 
-  router.delete("/:id", (req, res) => {
+  router.patch("/:id", async (req, res) => {
     const id = Number(req.params.id);
-    const deleted = taskStore.deleteTask(id);
-    if (!deleted) {
-      return res.status(404).json({ error: "Task not found" });
-    }
-    return res.status(204).send();
-  });
-
-  router.patch("/:id", (req, res) => {
-    const id = Number(req.params.id);
+    if(isNaN(id)) return res.status(400).json({error: "Invalid task id"})
     const { title } = req.body;
-    if (!title) {
-      return res.status(400).json({ error: "Title is requared" });
+    const cleanTitle = title.trim();
+    if(!cleanTitle || typeof cleanTitle !== "string") return res.status(400).json({error: "Invalid task title"})
+    try{
+      const updated = await prisma.task.update({
+        where: {id},
+        data: {title: cleanTitle}
+      })
+      return res.status(200).json(updated)
+    }catch(e){
+      if (e.code === "P2025") {
+        return res.status(404).json({ error: "Task not found" });
+      }
+      return res.status(500).json({error: "Internal server error"})
     }
-    const updated = taskStore.updateTask(id, title);
-    if (!updated) {
-      return res.status(404).json({ error: "Task not found" })
-    }
-    return res.status(200).json(updated);
   });
 
   return router;

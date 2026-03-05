@@ -3,9 +3,6 @@ const { createTasksRouter } = require("./routes/tasks");
 const { createProjectRouter } = require("./routes/projects");
 const { prisma } = require("./prisma");
 
-const { createTaskStore } = require("./store/tasksStore");
-const { createProjectStore } = require("./store/projectsStore");
-
 
 function createApp() {
   const app = express();
