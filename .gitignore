@@ -5,3 +5,4 @@ dist
 # Vite / React
 apps/web/dist
 apps/web/.vite
+.env.test

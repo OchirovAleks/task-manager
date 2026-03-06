@@ -1,14 +1,16 @@
 const request = require("supertest");
 const { createApp } = require("../src/app");
 const { apiHelper } = require("./helpers/api")
+const { prisma } = require("../src/prisma");
 
 describe("Projects API", () => {
     let app;
     let api;
     beforeEach(() => {
-        app = createApp();
+        app = createApp(prisma);
         api = apiHelper(app);
     })
+
 
     test("GET /projects returns [] initially", async () => {
         const res = await request(app).get("/projects");
