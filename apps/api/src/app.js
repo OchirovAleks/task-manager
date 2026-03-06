@@ -1,10 +1,9 @@
 const express = require("express");
 const { createTasksRouter } = require("./routes/tasks");
 const { createProjectRouter } = require("./routes/projects");
-const { prisma } = require("./prisma");
 
 
-function createApp() {
+function createApp(prisma) {
   const app = express();
 
   app.use(express.json());

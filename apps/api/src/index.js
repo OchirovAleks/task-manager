@@ -1,6 +1,8 @@
 const { createApp } = require("./app");
+const { prisma } = require("./prisma");
 
-const app = createApp();
+
+const app = createApp(prisma);
 const PORT = 3001;
 
 app.listen(PORT, () => {
