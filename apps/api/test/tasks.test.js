@@ -1,55 +1,39 @@
 const request = require("supertest");
 const { createApp } = require("../src/app");
 const { prisma } = require("../src/prisma");
+const { apiHelper } = require("./helpers/api")
 
 describe("Tasks API", () => {
   let app;
+  let api;
 
-  beforeEach( () => {
+  beforeEach(() => {
     app = createApp(prisma);
-  })
-
-  test("GET /tasks returns [] initially", async () => {
-    //const app = createApp();
-
-    const res = await request(app).get("/tasks");
-
-    expect(res.status).toBe(200);
-    expect(res.body).toEqual([])
-  });
-
-  test("POST /tasks create a task", async () => {
-    //const app = createApp();
-    const res = await request(app).post("/tasks").send({ title: "Learn tests" });
-    expect(res.status).toBe(201);
-    expect(res.body).toEqual({ id: 1, title: "Learn tests", projectId: null })
-  })
-
-  test("POST /tasks without a title return 400", async () => {
-    //const app = createApp();
-    const res = await request(app).post("/tasks").send({});
-    expect(res.status).toBe(400);
-    expect(res.body).toEqual({ error: "Title is required" });
+    api = apiHelper(app);
   })
 
   test("PATCH /tasks replaces the title", async () => {
-    //const app = createApp();
-    const setupRes = await request(app).post("/tasks").send({ title: "Create task" });
+    const projectRes = await api.createProject("P1");
+    const projectId = projectRes.body.id;
+    expect(projectRes.status).toBe(201);
+    const setupRes = await api.createTaskInProject("T1", projectId);
     expect(setupRes.status).toBe(201);
-    expect(setupRes.body).toEqual({ id: 1, title: "Create task", projectId: null });
+    expect(setupRes.body).toEqual({ id: 1, title: "T1", projectId: projectId });
     const res = await request(app).patch("/tasks/1").send({ title: "Replace title" });
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ id: 1, title: "Replace title", projectId: null });
+    expect(res.body).toEqual({ id: 1, title: "Replace title", projectId: projectId });
   })
 
   test("DELETE /tasks delete the task", async () => {
-    //const app = createApp();
-    const setupRes = await request(app).post("/tasks").send({ title: "Create task" });
+    const projectRes = await api.createProject("P1");
+    const projectId = projectRes.body.id;
+    expect(projectRes.status).toBe(201);
+    const setupRes = await api.createTaskInProject("T1", projectId);
+    const taskId = setupRes.body.id
     expect(setupRes.status).toBe(201);
-    expect(setupRes.body).toEqual({ id: 1, title: "Create task", projectId: null });
-    const res = await request(app).delete("/tasks/1");
+    const res = await request(app).delete(`/tasks/${taskId}`);
     expect(res.status).toBe(204);
-    const assertRes = await request(app).get("/tasks");
+    const assertRes = await request(app).get(`/projects/${projectId}/tasks`);
     expect(assertRes.status).toBe(200);
     expect(assertRes.body).toEqual([]);
   })

@@ -18,13 +18,17 @@ function createProjectRouter(prisma) {
 
     router.post("/", async (req, res) => {
         const { name } = req.body
-        if (!name.trim()) {
+        if(!name){
+            return res.status(400).json({ error: "Name is required" });
+        }
+        const cleanName = name.trim();
+        if (typeof cleanName !== 'string') {
             return res.status(400).json({ error: "Name is required" });
         };
         try {
             const created = await prisma.project.create({
                 data: {
-                    name
+                    name: cleanName
                 }
             })
             return res.status(201).json(created)
@@ -56,11 +60,12 @@ function createProjectRouter(prisma) {
     router.patch("/:id", async (req, res) => {
         const updatingProjectId = Number(req.params.id);
         const { name } = req.body;
+        const cleanName = name.trim();
+        if(!cleanName || typeof cleanName !== 'string'){
+            return res.status(400).json({ error: "Name is required" })
+        }
         if (isNaN(updatingProjectId)) {
             return res.status(400).json({ error: "Invalid project id" })
-        }
-        if (!name.trim()) {
-            return res.status(400).json({ error: "Name is required" });
         }
         try {
             const updated = await prisma.project.update({
@@ -83,6 +88,9 @@ function createProjectRouter(prisma) {
     router.post("/:projectId/tasks", async (req, res) => {
         const projectIdForTasks = Number(req.params.projectId);
         const { title } = req.body;
+        if(!title) {
+            return res.status(400).json({ error: "Invalid project id" });
+        }
         const cleanTitle = title.trim();
         if (isNaN(projectIdForTasks)) {
             return res.status(400).json({ error: "Invalid project id" });

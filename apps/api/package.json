@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "jest",
+    "test": "jest --runInBand",
     "dev": "nodemon src/index.js",
     "migrate:test": "cross-env DOTENV_CONFIG_PATH=.env.test node -r dotenv/config ./node_modules/.bin/prisma migrate deploy"
   },
@@ -16,6 +16,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "pg": "^8.20.0",
     "prisma": "^7.4.2"

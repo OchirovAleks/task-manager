@@ -86,8 +86,11 @@ describe("Projects API", () => {
         const assertTasks = await request(app).get(`/projects/${projectId}/tasks`);
         expect(assertTasks.status).toBe(404)
         expect(assertTasks.body).toEqual({ error: "Project not found" })
-        const allTasks = await request(app).get("/tasks");
-        expect(allTasks.status).toBe(200);
-        expect(allTasks.body).toEqual([]);
+        const tasksOfProject = await prisma.task.findMany({
+            where: {
+                projectId: projectId
+            }
+        })
+        expect(tasksOfProject).toEqual([]);
     })
 });
