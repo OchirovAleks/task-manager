@@ -20,68 +20,99 @@ function TasksPanel({
     }, [editingTaskId]);
     return (
         <div>
-            {selectedProjectId !== null &&
-                <div>
+            {selectedProjectId !== null && (
+                <div className="row">
                     <input
+                        className="input"
                         value={taskTitle}
                         onChange={(e) => setTaskTitle(e.target.value)}
-                        placeholder='Task name'
+                        placeholder="Task name"
                     />
-                    <button onClick={createTaskInProject}>Create task</button>
+                    <button className="btn" onClick={createTaskInProject}>
+                        Create task
+                    </button>
                 </div>
-            }
-            <h3>Tasks</h3>
+            )}
 
-            {selectedProjectId === null && <p>Select a project</p>}
-            {selectedProjectId !== null && tasks.length === 0 &&
-                <p>No tasks yet</p>
-            }
-            {selectedProjectId !== null && tasks.length !== 0 &&
-                <div>
-                    <ul>
-                        {tasks.map(t => (
-                            <li key={t.id}>
-                                {t.id !== editingTaskId ? (
-                                    <>
-                                        <span>{t.title}</span>
-                                        <button onClick={() => {
-                                            setEditingTaskId(t.id);
-                                            setEditingTitle(t.title);
-                                        }}>Edit</button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <input
-                                            ref={inputRef}
-                                            value={editingTitle}
-                                            onChange={(e) => setEditingTitle(e.target.value)}
-                                            onKeyDown={(e) => {
-                                                if (e.key === "Enter") upodateTask(t.id);
-                                                if (e.key === "Escape") {
-                                                    setEditingTaskId(null);
-                                                    setEditingTitle("");
-                                                }
+            <h3 className="cardTitle">Tasks</h3>
+
+            {selectedProjectId === null && <p className="hint">Select a project</p>}
+
+            {selectedProjectId !== null && tasks.length === 0 && (
+                <p className="hint">No tasks yet</p>
+            )}
+
+            {selectedProjectId !== null && tasks.length !== 0 && (
+                <ul className="list">
+                    {tasks.map((t) => (
+                        <li key={t.id} className="listItem">
+                            {t.id !== editingTaskId ? (
+                                <>
+                                    <span className="itemMain">{t.title}</span>
+
+                                    <div className="actions">
+                                        <button
+                                            className="btn btnSecondary"
+                                            onClick={() => {
+                                                setEditingTaskId(t.id);
+                                                setEditingTitle(t.title);
                                             }}
-                                        ></input>
-                                        <button onClick={() => {
-                                            updateTask(t.id)
-                                        }}
-                                        >Save</button>
-                                        <button onClick={() => {
-                                            setEditingTaskId(null);
-                                            setEditingTitle("");
-                                        }}>Cancel</button>
-                                    </>
-                                )}
-                                {t.id !== editingTaskId && <button onClick={() => {
-                                    deleteTask(t.id);
-                                }}>Delete task</button>}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            }
+                                        >
+                                            Edit
+                                        </button>
 
+                                        <button
+                                            className="btn btnDanger"
+                                            onClick={() => {
+                                                deleteTask(t.id);
+                                            }}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <input
+                                        className="input"
+                                        ref={inputRef}
+                                        value={editingTitle}
+                                        onChange={(e) => setEditingTitle(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") updateTask(t.id);
+                                            if (e.key === "Escape") {
+                                                setEditingTaskId(null);
+                                                setEditingTitle("");
+                                            }
+                                        }}
+                                    />
+
+                                    <div className="actions">
+                                        <button
+                                            className="btn"
+                                            onClick={() => {
+                                                updateTask(t.id);
+                                            }}
+                                        >
+                                            Save
+                                        </button>
+
+                                        <button
+                                            className="btn btnSecondary"
+                                            onClick={() => {
+                                                setEditingTaskId(null);
+                                                setEditingTitle("");
+                                            }}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };

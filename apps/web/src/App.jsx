@@ -27,23 +27,23 @@ function App() {
 
   useEffect(() => { projectsState.loadProjects(); }, []);
   return (
-    <div >
-      <div >
-        <div >
-          <div>
-            <h1 >Task Manager</h1>
-            <p >Projects & Tasks MVP</p>
+    <div className="appShell">
+      <div className="appContainer">
+        <div className="appHeader">
+          <div className="appTitleBlock">
+            <h1>Task Manager</h1>
+            <p>Projects & Tasks MVP</p>
           </div>
 
-          <div >
+          <div className="statusBar">
             {selectedProjectId === null
               ? "No project selected"
               : `Selected: ${selectedProject?.name}`}
           </div>
         </div>
 
-        <div >
-          <section >
+        <div className="appLayout">
+          <section className="panel">
             <ProjectsPanel
               projects={projectsState.projects}
               projectName={projectsState.projectName}
@@ -62,7 +62,7 @@ function App() {
             />
           </section>
 
-          <section >
+          <section className="panel">
             <TasksPanel
               selectedProjectId={selectedProjectId}
               tasks={tasksState.tasks}

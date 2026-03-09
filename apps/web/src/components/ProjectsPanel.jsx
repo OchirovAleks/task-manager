@@ -23,34 +23,41 @@ function ProjectsPanel({
     }, [editingProjectId]);
     return (
         <div>
-            <div>
+            <div className="row">
                 <input
+                    className="input"
                     value={projectName}
                     onChange={(e) => setProjectName(e.target.value)}
                     placeholder="Project name"
                 />
-                <button onClick={createProject}>Create</button>
-                <button onClick={loadProjects}>Reload</button>
+                <button className="btn" onClick={createProject}>
+                    Create
+                </button>
+                <button className="btn btnSecondary" onClick={loadProjects}>
+                    Reload
+                </button>
             </div>
 
-            <h3>Projects</h3>
+            <h3 className="cardTitle">Projects</h3>
 
             {projects.length === 0 ? (
-                <p>No projects yet</p>
+                <p className="hint">No projects yet</p>
             ) : (
-                <ul>
-                    {projects.map(p => (
+                <ul className="list">
+                    {projects.map((p) => (
                         <li
                             key={p.id}
+                            className={`listItem ${p.id === selectedProjectId ? "selected" : ""}`}
                             onClick={() => setSelectedProjectId(p.id)}
                         >
                             {p.id !== editingProjectId ? (
                                 <>
-                                    <span>{p.name}</span>
-                                    <span> id: {p.id}</span>
+                                    <span className="itemMain">{p.name}</span>
+                                    <span className="badge">id: {p.id}</span>
 
-                                    <div>
+                                    <div className="actions">
                                         <button
+                                            className="btn btnSecondary"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setEditingProjectId(p.id);
@@ -61,9 +68,10 @@ function ProjectsPanel({
                                         </button>
 
                                         <button
+                                            className="btn btnDanger"
                                             onClick={(e) => {
-                                                handleProjectDelete(p.id);
                                                 e.stopPropagation();
+                                                handleProjectDelete(p.id);
                                             }}
                                         >
                                             Delete
@@ -73,6 +81,7 @@ function ProjectsPanel({
                             ) : (
                                 <>
                                     <input
+                                        className="input"
                                         ref={inputRef}
                                         value={editingName}
                                         onChange={(e) => setEditingName(e.target.value)}
@@ -85,11 +94,12 @@ function ProjectsPanel({
                                         }}
                                     />
 
-                                    <div>
-                                        <button onClick={() => updateProject(p.id)}>
+                                    <div className="actions">
+                                        <button className="btn" onClick={() => updateProject(p.id)}>
                                             Save
                                         </button>
                                         <button
+                                            className="btn btnSecondary"
                                             onClick={() => {
                                                 setEditingProjectId(null);
                                                 setEditingName("");
