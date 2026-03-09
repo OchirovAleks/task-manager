@@ -1,334 +1,280 @@
-Task Manager
+# Task Manager
 
-A full-stack task and project management application built with React, Express, Prisma, and PostgreSQL.
+Full-stack project and task management application built with **React, Express, Prisma, and PostgreSQL**.
 
-Overview
+This project is designed as a portfolio application demonstrating practical backend and frontend engineering practices: API design, relational database modeling, integration testing, modular React architecture, and iterative refactoring from an MVP into a more production-like structure.
 
-Task Manager is a portfolio full-stack application that lets users create projects, manage tasks inside projects, and update data through a clean REST API. The project was built to demonstrate practical backend and frontend engineering fundamentals: API design, database relations, integration testing, modular React architecture, and a realistic development workflow.
+## 📚 Table of Contents
 
-Features
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [API Overview](#api-overview)
+- [Data Model](#data-model)
+- [Testing](#testing)
+- [Project Structure](#project-structure)
+- [Development Notes](#development-notes)
+- [Engineering Decisions](#engineering-decisions)
+- [Local Development](#local-development)
+- [Future Improvements](#future-improvements)
+- [Status](#status)
 
-Current
+---
 
-Create, list, update, and delete projects
+# Overview
 
-Create tasks inside a project
+Task Manager allows users to create projects and manage tasks within those projects through a clean REST API and a minimal UI.
 
-List all tasks for a selected project
+The project focuses on engineering practices rather than UI complexity.
 
-Update and delete tasks
+### Key ideas demonstrated
 
-Cascade delete: deleting a project removes its related tasks
+- Full-stack CRUD application
+- Relational database design
+- Modular backend architecture
+- Integration testing with a real database
+- React state management with custom hooks
 
-Inline editing for projects and tasks
+---
 
-Keyboard support for editing flows
+# 🚀 Features
 
-Minimal, clean UI for managing projects and tasks
+## Current
 
-PostgreSQL database with Prisma ORM
+- Create, list, update and delete projects
+- Create tasks inside a project
+- List all tasks for a selected project
+- Update and delete tasks
+- Cascade delete (removing a project deletes its tasks)
+- Inline editing for projects and tasks
+- Keyboard shortcuts for editing
+- PostgreSQL database with Prisma ORM
+- Integration tests using Jest and Supertest
 
-Integration tests with Supertest, Jest, and a dedicated test database
+## Planned
 
-Planned / polishing
+- End-to-end (E2E) tests
+- Deployment
+- CI pipeline
+- Optional authentication / user accounts
+- Optional support for unassigned tasks (`projectId = null`)
 
-Deployment
+---
 
-CI pipeline
+# 🧰 Tech Stack
 
-End‑to‑end (E2E) tests for the full user flow
+## Frontend
 
-Optional authentication and user accounts
+- React
+- Vite
+- Custom Hooks
+- Fetch API
+- CSS
 
-Expanded README with screenshots and architecture notes
+## Backend
 
-Optional support for unassigned tasks (projectId = null)
+- Node.js
+- Express
+- Prisma ORM
+- PostgreSQL
 
-Tech Stack
+## Testing
 
-Frontend
+- Jest
+- Supertest
+- Database-backed integration tests
 
-React
+---
 
-Vite
+# 🏗 Architecture
 
-Custom hooks
-
-Fetch API
-
-CSS
-
-Backend
-
-Node.js
-
-Express
-
-Prisma ORM
-
-PostgreSQL
-
-Testing
-
-Jest
-
-Supertest
-
-Database-backed integration tests
-
-Architecture
-
-Frontend
+## Frontend
 
 The frontend is organized by responsibility:
 
-components/ — UI components
+components/   → UI components  
+hooks/        → stateful logic  
+api/          → HTTP communication layer  
 
-hooks/ — stateful logic and handlers
+### Principles
 
-api/ — network layer for HTTP requests
+- Separation of concerns
+- API logic isolated from UI
+- Custom hooks for projects and tasks
+- Simple but scalable structure
 
-Main ideas:
-
-separation of concerns
-
-API layer isolated from UI
-
-custom hooks for projects and tasks
-
-optimistic UI updates where appropriate
-
-Backend
+## Backend
 
 The backend uses Express route modules and Prisma for persistence.
 
-Main ideas:
+### Main ideas
 
-REST-style API
+- REST-style API
+- Dependency injection through `createApp(prisma)`
+- Relational data modeled in PostgreSQL
+- Database-level cascade deletion
+- Integration tests against a dedicated test database
 
-dependency injection via createApp(prisma)
+---
 
-project-task relation modeled in PostgreSQL
+# 🔗 API Overview
 
-cascade deletion at the database level
+## Projects
 
-integration tests against a dedicated test database
+GET    /projects  
+POST   /projects  
+PATCH  /projects/:id  
+DELETE /projects/:id  
 
-API Overview
+## Project Tasks
 
-Projects
+GET  /projects/:projectId/tasks  
+POST /projects/:projectId/tasks  
 
-GET /projects
+## Tasks
 
-POST /projects
+PATCH  /tasks/:id  
+DELETE /tasks/:id  
 
-PATCH /projects/:id
+---
 
-DELETE /projects/:id
+# 🗄 Data Model
 
-Project Tasks
+## Project
 
-GET /projects/:projectId/tasks
+id  
+name  
 
-POST /projects/:projectId/tasks
+## Task
 
-Tasks
+id  
+title  
+projectId  
 
-PATCH /tasks/:id
+`projectId` is currently nullable to allow future support for unassigned tasks.
 
-DELETE /tasks/:id
+---
 
-Data Model
+# 🧪 Testing
 
-Project
+The backend uses integration tests to validate real application behavior.
 
-id
+### Tests verify
 
-name
+- project CRUD operations
+- task updates and deletion
+- nested project-task routes
+- cascade deletion behavior
 
-Task
+Tests run against a dedicated test database and reset tables between runs to keep results deterministic.
 
-id
+---
 
-title
+# 📦 Project Structure
 
-projectId
+apps/  
+&nbsp;&nbsp;api/  
+&nbsp;&nbsp;&nbsp;&nbsp;src/  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;routes/  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prisma.js  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;app.js  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index.js  
+&nbsp;&nbsp;&nbsp;&nbsp;prisma/  
+&nbsp;&nbsp;&nbsp;&nbsp;test/  
 
-Note: projectId is currently nullable in the schema to allow future support for unassigned tasks.
+&nbsp;&nbsp;web/  
+&nbsp;&nbsp;&nbsp;&nbsp;src/  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;components/  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hooks/  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;api/  
 
-Why this project
+---
 
-This project was built as a practical portfolio application to demonstrate:
-
-full-stack CRUD development
-
-relational database design
-
-testable backend architecture
-
-React state management with custom hooks
-
-iterative refactoring from MVP code into a more modular structure
-
-Testing
-
-The backend is tested with integration tests that exercise:
-
-project CRUD
-
-task update and deletion
-
-nested project-task routes
-
-cascade behavior when deleting a project
-
-Tests use:
-
-dedicated test database
-
-database reset between tests
-
-serial execution for stability
-
-Local Development
-
-Prerequisites
-
-Node.js
-
-npm
-
-PostgreSQL database
-
-Install dependencies
-
-From the repository root, install dependencies for the frontend and backend as needed.
-
-Backend environment
-
-Create an .env file inside apps/api with your development database connection.
-
-Test environment
-
-Create an .env.test file inside apps/api with your test database connection.
-
-Run backend
-
-From apps/api:
-
-npm run dev
-
-Run frontend
-
-From the web app directory:
-
-npm run dev
-
-Run tests
-
-From apps/api:
-
-npm test
-
-Project Structure
-
-apps/
-  api/
-    src/
-      routes/
-      prisma.js
-      app.js
-      index.js
-    prisma/
-    test/
-  web/
-    src/
-      components/
-      hooks/
-      api/
-
-Demo
-
-Screenshot will be added during polishing phase.
-
-Development Notes
+# 🧠 Development Notes
 
 This project started as a small CRUD MVP and was gradually refactored to introduce a more modular architecture.
 
-The backend originally used an in-memory store, but was later migrated to PostgreSQL with Prisma to make the API closer to production setups.
+The backend originally used an in-memory store and was later migrated to PostgreSQL with Prisma to make the API closer to real production setups.
 
-Engineering Decisions
+---
 
-Several design choices in this project were made to keep the codebase simple but realistic for production-style development.
+# ⚙️ Engineering Decisions
 
-Dependency Injection
+## Dependency Injection
 
-The Express application is created using createApp(prisma). This allows the database client to be injected instead of imported globally. The main benefits are:
+The Express app is created with:
 
-easier testing
+createApp(prisma)
 
-ability to use a separate test database
+This allows:
 
-clearer separation between infrastructure and application logic
+- easier testing
+- separate test database
+- clear separation between infrastructure and application logic
 
-Database-backed integration tests
+## Database-backed integration tests
 
-Instead of mocking the database, tests run against a dedicated PostgreSQL test database. This ensures that:
+Instead of mocking the database, tests run against a real PostgreSQL test database.
 
-Prisma queries are tested in real conditions
+### Benefits
 
-database constraints and cascade rules are validated
+- Prisma queries are tested in real conditions
+- cascade rules are validated
+- API behavior matches production
 
-API behaviour matches production behaviour
+## Nested project-task routes
 
-Tables are truncated between tests to keep test runs deterministic.
+Tasks are created through:
 
-Nested project–task routes
+POST /projects/:projectId/tasks
 
-Tasks are created through /projects/:projectId/tasks. This makes ownership explicit and simplifies validation logic because a task always belongs to a project at creation time.
+This makes ownership explicit and simplifies validation logic.
 
-Cascade deletion
+## Cascade deletion
 
-The relation between Project and Task uses onDelete: Cascade in the Prisma schema. When a project is removed, its tasks are automatically removed by the database. This avoids manual cleanup logic in the API.
+The Prisma schema uses:
 
-Future extensibility
+onDelete: Cascade
 
-The schema currently allows Task.projectId to be nullable. This is intentional so the project can later support features like:
+When a project is deleted, its tasks are automatically removed by the database.
 
-unassigned tasks
+---
 
-task inbox
+# 🔧 Local Development
 
-cross‑project task organization
+## Backend
 
-Engineering Notes
+cd apps/api  
+npm install  
+npm run dev  
 
-Dependency injection
+## Frontend
 
-The Express app receives Prisma through createApp(prisma), which makes the app easier to test and keeps infrastructure concerns out of route definitions.
+cd apps/web  
+npm install  
+npm run dev  
 
-Database-backed tests
+## Run tests
 
-Tests run against a dedicated test database and reset tables between test cases. This keeps integration tests deterministic and close to real runtime behavior.
+cd apps/api  
+npm test  
 
-Future design decision
+---
 
-The schema currently allows Task.projectId = null as preparation for a future “unassigned tasks” feature. The current UI flow creates tasks inside projects only.
+# 📈 Future Improvements
 
-What I would improve next
+Planned improvements:
 
-Deploy frontend and backend
+- deployment
+- CI workflow
+- E2E tests
+- screenshots / demo GIF
+- authentication
+- task filtering and sorting
 
-Add CI workflow
+---
 
-Add screenshots / demo GIF
-
-Add stronger error handling and loading states
-
-Add support for unassigned tasks
-
-Expand filtering / sorting / task metadata
-
-Status
+# Status
 
 This project is actively being polished and improved.
