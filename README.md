@@ -2,7 +2,24 @@
 
 Full-stack project and task management application built with **React, Express, Prisma, and PostgreSQL**.
 
+Source code: https://github.com/OchirovAleks/task-manager
+
 This project is designed as a portfolio application demonstrating practical backend and frontend engineering practices: API design, relational database modeling, integration testing, modular React architecture, and iterative refactoring from an MVP into a more production-like structure.
+
+---
+
+## Quick Summary
+
+Task Manager is a full-stack CRUD application for managing projects and tasks.
+
+It demonstrates:
+
+- REST API design with Express
+- relational database modeling with PostgreSQL and Prisma
+- integration testing with Jest and Supertest
+- modular React frontend with custom hooks
+
+---
 
 ## 📚 Table of Contents
 
@@ -10,6 +27,7 @@ This project is designed as a portfolio application demonstrating practical back
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Architecture](#architecture)
+- [System Architecture](#system-architecture)
 - [API Overview](#api-overview)
 - [Data Model](#data-model)
 - [Testing](#testing)
@@ -118,6 +136,22 @@ The backend uses Express route modules and Prisma for persistence.
 
 ---
 
+## System Architecture
+
+React (Frontend)
+        |
+        | REST API
+        v
+Express Server
+        |
+        v
+Prisma ORM
+        |
+        v
+PostgreSQL Database
+
+---
+
 # 🔗 API Overview
 
 ## Projects
@@ -204,9 +238,7 @@ The backend originally used an in-memory store and was later migrated to Postgre
 ## Dependency Injection
 
 The Express app is created with:
-
 createApp(prisma)
-
 This allows:
 
 - easier testing
@@ -226,9 +258,7 @@ Instead of mocking the database, tests run against a real PostgreSQL test databa
 ## Nested project-task routes
 
 Tasks are created through:
-
 POST /projects/:projectId/tasks
-
 This makes ownership explicit and simplifies validation logic.
 
 ## Cascade deletion
