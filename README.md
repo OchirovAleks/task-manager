@@ -6,6 +6,20 @@ This project is designed as a portfolio application demonstrating practical back
 
 ## 📚 Table of Contents
 
+---
+
+## Quick Summary
+
+Task Manager is a full-stack CRUD application for managing projects and tasks.
+
+It demonstrates:
+
+- REST API design with Express
+- relational database modeling with PostgreSQL and Prisma
+- integration testing with Jest and Supertest
+- modular React frontend with custom hooks
+
+---
 - [Overview](#overview)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
