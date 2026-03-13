@@ -11,14 +11,15 @@ function createProjectRouter(prisma) {
                 }
             });
             return res.json(projects);
-        } catch (e) {
-            return res.status(500).json({ error: "Internal server error" });
+        } catch (error) {
+            console.error("GET /projects failed:", error);
+            res.status(500).json({ error: "Internal server error" });
         }
     });
 
     router.post("/", async (req, res) => {
         const { name } = req.body
-        if(!name){
+        if (!name) {
             return res.status(400).json({ error: "Name is required" });
         }
         const cleanName = name.trim();
@@ -32,8 +33,9 @@ function createProjectRouter(prisma) {
                 }
             })
             return res.status(201).json(created)
-        } catch (e) {
-            return res.status(500).json({ error: "Internal server error" });
+        } catch (error) {
+            console.error("GET /projects failed:", error);
+            res.status(500).json({ error: "Internal server error" });
         }
     })
 
@@ -49,11 +51,12 @@ function createProjectRouter(prisma) {
                 }
             })
             return res.status(204).send()
-        } catch (e) {
-            if (e.code === "P2025") {
+        } catch (error) {
+            if (error.code === "P2025") {
                 return res.status(404).json({ error: "Project not found" });
             }
-            return res.status(500).json({ error: "Internal server error" });
+            console.error("GET /projects failed:", error);
+            res.status(500).json({ error: "Internal server error" });
         }
     })
 
@@ -61,7 +64,7 @@ function createProjectRouter(prisma) {
         const updatingProjectId = Number(req.params.id);
         const { name } = req.body;
         const cleanName = name.trim();
-        if(!cleanName || typeof cleanName !== 'string'){
+        if (!cleanName || typeof cleanName !== 'string') {
             return res.status(400).json({ error: "Name is required" })
         }
         if (isNaN(updatingProjectId)) {
@@ -77,18 +80,19 @@ function createProjectRouter(prisma) {
                 }
             })
             return res.status(200).json(updated);
-        } catch (e) {
-            if (e.code === "P2025") {
+        } catch (error) {
+            if (error.code === "P2025") {
                 return res.status(404).json({ error: "Project not found" });
             }
-            return res.status(500).json({ error: "Internal server error" });
+            console.error("GET /projects failed:", error);
+            res.status(500).json({ error: "Internal server error" });
         }
     })
 
     router.post("/:projectId/tasks", async (req, res) => {
         const projectIdForTasks = Number(req.params.projectId);
         const { title } = req.body;
-        if(!title) {
+        if (!title) {
             return res.status(400).json({ error: "Invalid project id" });
         }
         const cleanTitle = title.trim();
@@ -101,7 +105,7 @@ function createProjectRouter(prisma) {
         const project = await prisma.project.findUnique({
             where: { id: projectIdForTasks }
         })
-        if(!project) return res.status(404).json({ error: "Project not found" });
+        if (!project) return res.status(404).json({ error: "Project not found" });
         try {
             const createdTask = await prisma.task.create({
                 data: {
@@ -110,8 +114,9 @@ function createProjectRouter(prisma) {
                 }
             })
             return res.status(201).json(createdTask)
-        } catch (e) {
-            return res.status(500).json({ error: "Internal server error" });
+        } catch (error) {
+            console.error("GET /projects failed:", error);
+            res.status(500).json({ error: "Internal server error" });
         }
     })
 
@@ -120,18 +125,19 @@ function createProjectRouter(prisma) {
         if (isNaN(projectId)) {
             return res.status(400).json({ error: "Invalid project id" });
         }
-        try{
+        try {
             const project = await prisma.project.findUnique({
-                where: {id: projectId}
+                where: { id: projectId }
             })
-            if(!project) return res.status(404).json({ error: "Project not found" });
+            if (!project) return res.status(404).json({ error: "Project not found" });
             const tasks = await prisma.task.findMany({
                 orderBy: { id: "asc" },
-                where: {projectId}
+                where: { projectId }
             })
             return res.json(tasks)
-        }catch(e){
-            return res.status(500).json({ error: "Internal server error" });
+        } catch (error) {
+            console.error("GET /projects failed:", error);
+            res.status(500).json({ error: "Internal server error" });
         }
     })
 
