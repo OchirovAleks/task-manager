@@ -7,6 +7,9 @@
     "start": "node src/index.js",
     "test": "jest --runInBand",
     "dev": "nodemon src/index.js",
+    "generate": "prisma generate",
+    "postinstall": "prisma generate",
+    "migrate:deploy": "prisma migrate deploy",
     "migrate:test": "cross-env DOTENV_CONFIG_PATH=.env.test node -r dotenv/config ./node_modules/.bin/prisma migrate deploy"
   },
   "keywords": [],
