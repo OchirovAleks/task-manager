@@ -1,10 +1,13 @@
 # Task Manager
 
+## Live Demo
+
+Frontend: https://task-manager-gamma-five-66.vercel.app/  
+API: https://task-manager-api-1216.onrender.com
+
 Full-stack project and task management application built with **React, Express, Prisma, and PostgreSQL**.
 
-This project is designed as a portfolio application demonstrating practical backend and frontend engineering practices: API design, relational database modeling, integration testing, modular React architecture, and iterative refactoring from an MVP into a more production-like structure.
-
-## 📚 Table of Contents
+This project is designed as a portfolio application demonstrating practical backend and frontend engineering practices: API design, relational database modeling, integration testing, modular React architecture, and iterative refactoring from an MVP into a more production-like structure. 
 
 ---
 
@@ -20,9 +23,14 @@ It demonstrates:
 - modular React frontend with custom hooks
 
 ---
+
+## 📚 Table of Contents
+
+- [Live Demo](#live-demo)
 - [Overview](#overview)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
+- [Deployment](#deployment)
 - [Architecture](#architecture)
 - [API Overview](#api-overview)
 - [Data Model](#data-model)
@@ -38,7 +46,7 @@ It demonstrates:
 
 # Overview
 
-Task Manager allows users to create projects and manage tasks within those projects through a clean REST API and a minimal UI.
+Task Manager allows users to create projects and manage tasks within those projects through a clean REST API and a minimal UI. The application is fully deployed and accessible online, demonstrating a realistic cloud deployment setup.
 
 The project focuses on engineering practices rather than UI complexity.
 
@@ -69,7 +77,6 @@ The project focuses on engineering practices rather than UI complexity.
 ## Planned
 
 - End-to-end (E2E) tests
-- Deployment
 - CI pipeline
 - Optional authentication / user accounts
 - Optional support for unassigned tasks (`projectId = null`)
@@ -92,12 +99,43 @@ The project focuses on engineering practices rather than UI complexity.
 - Express
 - Prisma ORM
 - PostgreSQL
+- REST API
 
 ## Testing
 
 - Jest
 - Supertest
 - Database-backed integration tests
+
+---
+
+# ☁️ Deployment
+
+The application is deployed using a cloud-based architecture:
+
+Frontend: **Vercel**  
+Backend API: **Render Web Service**  
+Database: **Render PostgreSQL**
+
+Environment variables are used to configure the frontend API endpoint:
+
+VITE_API_URL
+
+Backend services communicate with the database using Render's internal network.
+
+Database schema is managed with **Prisma migrations** and automatically applied during deployment.
+
+---
+
+# 🌐 System Architecture
+
+Vercel (React Frontend)
+        │
+        ▼
+Render Web Service (Express API)
+        │
+        ▼
+Render PostgreSQL
 
 ---
 
@@ -173,6 +211,8 @@ projectId
 # 🧪 Testing
 
 The backend uses integration tests to validate real application behavior.
+Tests run against a dedicated PostgreSQL test database and reset tables between runs to keep results deterministic.
+Tests are executed sequentially (`jest --runInBand`) to avoid database race conditions.
 
 ### Tests verify
 
@@ -280,7 +320,6 @@ npm test
 
 Planned improvements:
 
-- deployment
 - CI workflow
 - E2E tests
 - screenshots / demo GIF
