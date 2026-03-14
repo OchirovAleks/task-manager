@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./config";
+import { API_BASE_URL } from "./baseUrl";
 
 export async function loadTasks(projectId) {
     const res = await fetch(`${API_BASE_URL}/projects/${projectId}/tasks`);
