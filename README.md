@@ -1,4 +1,5 @@
 # Task Manager
+![CI](https://github.com/OchirovAleks/task-manager/actions/workflows/ci.yml/badge.svg)
 
 ## Live Demo
 
