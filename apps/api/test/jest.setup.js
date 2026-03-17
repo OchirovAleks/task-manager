@@ -1,4 +1,4 @@
-require("dotenv").config({ path: ".env.test" });
+require("dotenv").config({ path: ".env.test", quiet: true });
 
 process.env.NODE_ENV = "test";
 

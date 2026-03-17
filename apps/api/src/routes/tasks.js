@@ -1,12 +1,12 @@
 const express = require("express");
-
+const { createError } = require("../utils/createError");
 
 function createTasksRouter(prisma) {
   const router = express.Router();
 
-  router.delete("/:id", async (req, res) => {
+  router.delete("/:id", async (req, res,next) => {
     const taskId = Number(req.params.id);
-    if (isNaN(taskId)) return res.status(400).json({ error: "Invalid task id" })
+    if (isNaN(taskId)) return next(createError("Invalid task id", 400))
     try {
       const deleted = await prisma.task.delete({
         where: { id: taskId }
@@ -14,19 +14,20 @@ function createTasksRouter(prisma) {
       return res.status(204).send()
     } catch (error) {
       if (error.code === "P2025") {
-        return res.status(404).json({ error: "Project not found" });
+        return next(createError("Project not found", 404))
       }
-      console.error("GET /projects failed:", error);
-      res.status(500).json({ error: "Internal server error" });
+      console.error("DELETE /task/:taskId failed:", error);
+      next(error)
     }
   });
 
-  router.patch("/:id", async (req, res) => {
+  router.patch("/:id", async (req, res, next) => {
     const id = Number(req.params.id);
-    if (isNaN(id)) return res.status(400).json({ error: "Invalid task id" })
+    if (isNaN(id)) return next(createError("Invalid task id", 400))
     const { title } = req.body;
+    if(typeof title !== "string") return next(createError("Invalid task title", 400))
     const cleanTitle = title.trim();
-    if (!cleanTitle || typeof cleanTitle !== "string") return res.status(400).json({ error: "Invalid task title" })
+    if (!cleanTitle) return next(createError("Invalid task title", 400))
     try {
       const updated = await prisma.task.update({
         where: { id },
@@ -35,10 +36,10 @@ function createTasksRouter(prisma) {
       return res.status(200).json(updated)
     } catch (error) {
       if (error.code === "P2025") {
-        return res.status(404).json({ error: "Project not found" });
+        return next(createError("Project not found", 404))
       }
-      console.error("GET /projects failed:", error);
-      res.status(500).json({ error: "Internal server error" });
+      console.error("PATCH /tasks/:taskId failed:", error);
+      next(error)
     }
   });
 
