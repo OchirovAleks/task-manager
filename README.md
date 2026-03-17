@@ -61,7 +61,7 @@ The project focuses on engineering practices rather than UI complexity.
 
 ---
 
-# 🚀 Features
+# Features
 
 ## Current
 
@@ -84,7 +84,7 @@ The project focuses on engineering practices rather than UI complexity.
 
 ---
 
-# 🧰 Tech Stack
+# Tech Stack
 
 ## Frontend
 
@@ -110,7 +110,7 @@ The project focuses on engineering practices rather than UI complexity.
 
 ---
 
-# ☁️ Deployment
+# Deployment
 
 The application is deployed using a cloud-based architecture:
 
@@ -128,7 +128,7 @@ Database schema is managed with **Prisma migrations** and automatically applied 
 
 ---
 
-# 🌐 System Architecture
+# System Architecture
 
 Vercel (React Frontend)
         │
@@ -171,7 +171,7 @@ The backend uses Express route modules and Prisma for persistence.
 
 ---
 
-# 🔗 API Overview
+# API Overview
 
 ## Projects
 
@@ -192,7 +192,7 @@ DELETE /tasks/:id
 
 ---
 
-# 🗄 Data Model
+# Data Model
 
 ## Project
 
@@ -209,7 +209,7 @@ projectId
 
 ---
 
-# 🧪 Testing
+# Testing
 
 The backend uses integration tests to validate real application behavior.
 Tests run against a dedicated PostgreSQL test database and reset tables between runs to keep results deterministic.
@@ -222,11 +222,11 @@ Tests are executed sequentially (`jest --runInBand`) to avoid database race cond
 - nested project-task routes
 - cascade deletion behavior
 
-Tests run against a dedicated test database and reset tables between runs to keep results deterministic.
+CI runs on every push and pull request.
 
 ---
 
-# 📦 Project Structure
+# Project Structure
 
 apps/  
 &nbsp;&nbsp;api/  
@@ -246,7 +246,7 @@ apps/
 
 ---
 
-# 🧠 Development Notes
+# Development Notes
 
 This project started as a small CRUD MVP and was gradually refactored to introduce a more modular architecture.
 
@@ -254,7 +254,7 @@ The backend originally used an in-memory store and was later migrated to Postgre
 
 ---
 
-# ⚙️ Engineering Decisions
+# Engineering Decisions
 
 ## Dependency Injection
 
@@ -296,7 +296,7 @@ When a project is deleted, its tasks are automatically removed by the database.
 
 ---
 
-# 🔧 Local Development
+# Local Development
 
 ## Backend
 
@@ -317,7 +317,7 @@ npm test
 
 ---
 
-# 📈 Future Improvements
+# Future Improvements
 
 Planned improvements:
 
