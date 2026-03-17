@@ -16,12 +16,12 @@ This project is designed as a portfolio application demonstrating practical back
 
 Task Manager is a full-stack CRUD application for managing projects and tasks.
 
-It demonstrates:
+Highlights:
 
-- REST API design with Express
-- relational database modeling with PostgreSQL and Prisma
-- integration testing with Jest and Supertest
-- modular React frontend with custom hooks
+- REST API with Express
+- PostgreSQL + Prisma data model
+- Integration tests with Jest + Supertest
+- Modular React architecture (hooks + API layer)
 
 ---
 
@@ -169,6 +169,7 @@ The backend uses Express route modules and Prisma for persistence.
 - Database-level cascade deletion
 - Integration tests against a dedicated test database
 
+[↑ Back to top](#task-manager)
 ---
 
 # API Overview
@@ -224,6 +225,7 @@ Tests are executed sequentially (`jest --runInBand`) to avoid database race cond
 
 CI runs on every push and pull request.
 
+[↑ Back to top](#task-manager)
 ---
 
 # Project Structure
@@ -294,6 +296,7 @@ onDelete: Cascade
 
 When a project is deleted, its tasks are automatically removed by the database.
 
+[↑ Back to top](#task-manager)
 ---
 
 # Local Development
@@ -321,7 +324,6 @@ npm test
 
 Planned improvements:
 
-- CI workflow
 - E2E tests
 - screenshots / demo GIF
 - authentication
