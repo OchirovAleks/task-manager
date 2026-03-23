@@ -74,11 +74,11 @@ The project focuses on engineering practices rather than UI complexity.
 - Keyboard shortcuts for editing
 - PostgreSQL database with Prisma ORM
 - Integration tests using Jest and Supertest
+- Centralized error handling
 
 ## Planned
 
 - End-to-end (E2E) tests
-- CI pipeline
 - Optional authentication / user accounts
 - Optional support for unassigned tasks (`projectId = null`)
 

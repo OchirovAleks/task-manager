@@ -1,16 +1,12 @@
 const express = require("express");
 const { createError } = require("../utils/createError");
 
-function createProjectRouter(prisma) {
+function createProjectRouter(projectRepo) {
     const router = express.Router();
 
     router.get("/", async (req, res, next) => {
         try {
-            const projects = await prisma.project.findMany({
-                orderBy: {
-                    id: "asc"
-                }
-            });
+            const projects = await projectRepo.getAll();
             return res.json(projects);
         } catch (error) {
             console.error("GET /projects failed:", error);
@@ -30,11 +26,7 @@ function createProjectRouter(prisma) {
             return next(createError("Name is required", 400));
         }
         try {
-            const created = await prisma.project.create({
-                data: {
-                    name: cleanName
-                }
-            })
+            const created = await projectRepo.create(cleanName);
             return res.status(201).json(created)
         } catch (error) {
             console.error("POST /projects failed:", error);
@@ -48,11 +40,7 @@ function createProjectRouter(prisma) {
             return next(createError("Invalid project id", 400));
         }
         try {
-            await prisma.project.delete({
-                where: {
-                    id: projectId
-                }
-            })
+            await projectRepo.deleteById(projectId)
             return res.status(204).send()
         } catch (error) {
             if (error.code === "P2025") {
@@ -77,14 +65,7 @@ function createProjectRouter(prisma) {
             return next(createError("Invalid project id", 400))
         }
         try {
-            const updated = await prisma.project.update({
-                where: {
-                    id: updatingProjectId
-                },
-                data: {
-                    name: cleanName
-                }
-            })
+            const updated = await projectRepo.updateById(updatingProjectId, cleanName)
             return res.status(200).json(updated);
         } catch (error) {
             if (error.code === "P2025") {
@@ -109,9 +90,7 @@ function createProjectRouter(prisma) {
             return next(createError("Invalid project id", 400))
         }
         try {
-            const project = await prisma.project.findUnique({
-                where: { id: projectIdForTasks }
-            })
+            const project = await projectRepo.findById(projectIdForTasks)
             if (!project) return next(createError("Project not found", 404))
 
             const createdTask = await prisma.task.create({
@@ -133,9 +112,7 @@ function createProjectRouter(prisma) {
             return next(createError("Invalid project id", 400))
         }
         try {
-            const project = await prisma.project.findUnique({
-                where: { id: projectId }
-            })
+            const project = await projectRepo.findById(projectIdForTasks);
             if (!project) return next(createError("Project not found", 404))
             const tasks = await prisma.task.findMany({
                 orderBy: { id: "asc" },
