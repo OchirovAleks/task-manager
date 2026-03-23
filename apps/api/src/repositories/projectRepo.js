@@ -13,18 +13,18 @@ function createProjectRepo(prisma) {
     };
 
     const deleteById = (id) => {
-      prisma.project.delete({
+      return prisma.project.delete({
         where: { id },
       })
     }
     const updateById = (id, name) => {
-      prisma.project.update({
+      return prisma.project.update({
         where: { id },
         data: { name },
       })
     }
     const findById = (id) => {
-      prisma.project.findUnique({
+      return prisma.project.findUnique({
         where: { id },
       })
     }

@@ -1,16 +1,14 @@
 const express = require("express");
 const { createError } = require("../utils/createError");
 
-function createTasksRouter(prisma) {
+function createTasksRouter(taskRepo) {
   const router = express.Router();
 
   router.delete("/:id", async (req, res,next) => {
     const taskId = Number(req.params.id);
     if (isNaN(taskId)) return next(createError("Invalid task id", 400))
     try {
-      const deleted = await prisma.task.delete({
-        where: { id: taskId }
-      })
+      const deleted = await taskRepo.deleteById(taskId)
       return res.status(204).send()
     } catch (error) {
       if (error.code === "P2025") {
@@ -29,10 +27,7 @@ function createTasksRouter(prisma) {
     const cleanTitle = title.trim();
     if (!cleanTitle) return next(createError("Invalid task title", 400))
     try {
-      const updated = await prisma.task.update({
-        where: { id },
-        data: { title: cleanTitle }
-      })
+      const updated = await taskRepo.updateById(id, cleanTitle)
       return res.status(200).json(updated)
     } catch (error) {
       if (error.code === "P2025") {

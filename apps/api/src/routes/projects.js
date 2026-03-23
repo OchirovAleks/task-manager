@@ -1,7 +1,7 @@
 const express = require("express");
 const { createError } = require("../utils/createError");
 
-function createProjectRouter(projectRepo) {
+function createProjectRouter(projectRepo, taskRepo) {
     const router = express.Router();
 
     router.get("/", async (req, res, next) => {
@@ -92,13 +92,7 @@ function createProjectRouter(projectRepo) {
         try {
             const project = await projectRepo.findById(projectIdForTasks)
             if (!project) return next(createError("Project not found", 404))
-
-            const createdTask = await prisma.task.create({
-                data: {
-                    title: cleanTitle,
-                    project: { connect: { id: projectIdForTasks } }
-                }
-            })
+            const createdTask = await taskRepo.createInProject(cleanTitle, projectIdForTasks)
             return res.status(201).json(createdTask)
         } catch (error) {
             console.error("POST /tasks failed:", error);
@@ -112,12 +106,9 @@ function createProjectRouter(projectRepo) {
             return next(createError("Invalid project id", 400))
         }
         try {
-            const project = await projectRepo.findById(projectIdForTasks);
+            const project = await projectRepo.findById(projectId);
             if (!project) return next(createError("Project not found", 404))
-            const tasks = await prisma.task.findMany({
-                orderBy: { id: "asc" },
-                where: { projectId }
-            })
+            const tasks = await taskRepo.findByProject(projectId)
             return res.json(tasks)
         } catch (error) {
             console.error("GET /projects/:projectId/tasks failed:", error);
