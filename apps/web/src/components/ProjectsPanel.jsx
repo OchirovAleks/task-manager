@@ -31,7 +31,7 @@ function ProjectsPanel({
                     placeholder="Project name"
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
-                            createProject;
+                            createProject();
                             return;
                         }
 

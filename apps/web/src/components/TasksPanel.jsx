@@ -30,7 +30,7 @@ function TasksPanel({
                         placeholder="Task name"
                         onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                                createTaskInProject;
+                                createTaskInProject();
                                 return;
                             }
 
