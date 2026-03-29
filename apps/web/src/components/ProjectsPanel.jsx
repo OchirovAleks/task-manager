@@ -11,7 +11,6 @@ function ProjectsPanel({
     setEditingName,
     editingProjectId,
     setEditingProjectId,
-    deleteProject,
     updateProject,
     handleProjectDelete
 }) {
@@ -26,9 +25,21 @@ function ProjectsPanel({
             <div className="row">
                 <input
                     className="input"
+                    data-testid="project-input"
                     value={projectName}
                     onChange={(e) => setProjectName(e.target.value)}
                     placeholder="Project name"
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            createProject;
+                            return;
+                        }
+
+                        if (e.key === "Escape") {
+                            setProjectName("");
+                            e.currentTarget.blur();
+                        }
+                    }}
                 />
                 <button className="btn" onClick={createProject}>
                     Create
@@ -90,6 +101,7 @@ function ProjectsPanel({
                                             if (e.key === "Escape") {
                                                 setEditingProjectId(null);
                                                 setEditingName("");
+                                                e.currentTarget.blur();
                                             }
                                         }}
                                     />

@@ -24,9 +24,21 @@ function TasksPanel({
                 <div className="row">
                     <input
                         className="input"
+                        data-testid="task-input"
                         value={taskTitle}
                         onChange={(e) => setTaskTitle(e.target.value)}
                         placeholder="Task name"
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                createTaskInProject;
+                                return;
+                            }
+
+                            if (e.key === "Escape") {
+                                setTaskTitle("");
+                                e.currentTarget.blur();
+                            }
+                        }}
                     />
                     <button className="btn" onClick={createTaskInProject}>
                         Create task
@@ -83,6 +95,7 @@ function TasksPanel({
                                             if (e.key === "Escape") {
                                                 setEditingTaskId(null);
                                                 setEditingTitle("");
+                                                e.currentTarget.blur();
                                             }
                                         }}
                                     />
