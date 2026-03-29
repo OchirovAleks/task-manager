@@ -142,7 +142,7 @@ Render PostgreSQL
 
 ---
 
-# 🏗 Architecture
+# Architecture
 
 ## Frontend
 
@@ -212,7 +212,7 @@ projectId
 
 ---
 
-# 🧪 Testing
+# Testing
 
 The project includes multiple layers of testing:
 
