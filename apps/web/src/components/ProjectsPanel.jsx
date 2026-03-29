@@ -58,6 +58,7 @@ function ProjectsPanel({
                     {projects.map((p) => (
                         <li
                             key={p.id}
+                            data-testid={`project-item-${p.id}`}
                             className={`listItem ${p.id === selectedProjectId ? "selected" : ""}`}
                             onClick={() => setSelectedProjectId(p.id)}
                         >
@@ -80,6 +81,7 @@ function ProjectsPanel({
 
                                         <button
                                             className="btn btnDanger"
+                                            data-testid={`delete-project-${p.id}`}
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleProjectDelete(p.id);
