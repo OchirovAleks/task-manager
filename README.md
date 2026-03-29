@@ -1,5 +1,6 @@
 # Task Manager
 ![CI](https://github.com/OchirovAleks/task-manager/actions/workflows/ci.yml/badge.svg)
+![E2E](https://github.com/OchirovAleks/task-manager/actions/workflows/e2e.yml/badge.svg)
 
 ## Live Demo
 
@@ -74,11 +75,11 @@ The project focuses on engineering practices rather than UI complexity.
 - Keyboard shortcuts for editing
 - PostgreSQL database with Prisma ORM
 - Integration tests using Jest and Supertest
+- End-to-end tests using Playwright for full user workflows
 - Centralized error handling
 
 ## Planned
 
-- End-to-end (E2E) tests
 - Optional authentication / user accounts
 - Optional support for unassigned tasks (`projectId = null`)
 
@@ -125,6 +126,7 @@ VITE_API_URL
 Backend services communicate with the database using Render's internal network.
 
 Database schema is managed with **Prisma migrations** and automatically applied during deployment.
+The deployed application is used as the target environment for end-to-end tests.
 
 ---
 
@@ -210,20 +212,38 @@ projectId
 
 ---
 
-# Testing
+# 🧪 Testing
 
-The backend uses integration tests to validate real application behavior.
-Tests run against a dedicated PostgreSQL test database and reset tables between runs to keep results deterministic.
-Tests are executed sequentially (`jest --runInBand`) to avoid database race conditions.
+The project includes multiple layers of testing:
 
-### Tests verify
+- **Integration tests (backend)** using Jest and Supertest
+- **End-to-end tests (frontend + backend)** using Playwright
+- **CI validation** for API tests and frontend build
 
-- project CRUD operations
-- task updates and deletion
-- nested project-task routes
-- cascade deletion behavior
+### Integration Tests
 
-CI runs on every push and pull request.
+Backend tests run against a dedicated PostgreSQL test database and reset tables between runs to ensure deterministic results.
+
+### End-to-End Tests
+
+Playwright tests simulate real user workflows:
+
+- create project
+- create tasks
+- delete project (with cascade delete)
+
+E2E tests run against the deployed application (Vercel + Render).
+
+Due to reliance on external services (cold starts, shared database), E2E tests are executed via a **manual CI workflow** to ensure stability.
+
+### CI Pipeline
+
+CI runs on every push and pull request:
+
+- API tests (Jest + Supertest)
+- frontend production build
+
+E2E tests are available as a separate workflow in GitHub Actions.
 
 [↑ Back to top](#task-manager)
 ---
@@ -324,7 +344,6 @@ npm test
 
 Planned improvements:
 
-- E2E tests
 - screenshots / demo GIF
 - authentication
 - task filtering and sorting
