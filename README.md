@@ -5,7 +5,7 @@
 ## Live Demo
 
 Frontend: https://task-manager-gamma-five-66.vercel.app/  
-API: https://task-manager-api-1216.onrender.com
+API: https://task-manager-api-1216.onrender.com/health
 
 Full-stack project and task management application built with **React, Express, Prisma, and PostgreSQL**.
 
