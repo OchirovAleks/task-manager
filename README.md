@@ -22,6 +22,7 @@ Highlights:
 - REST API with Express
 - PostgreSQL + Prisma data model
 - Integration tests with Jest + Supertest
+- End-to-End testing (Playwright)
 - Modular React architecture (hooks + API layer)
 
 ---
