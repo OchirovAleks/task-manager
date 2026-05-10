@@ -6,6 +6,7 @@ const { errorHandler } = require("./middlewares/errorHandler");
 const { createProjectRepo } = require("./repositories/projectRepo")
 const {createTaskRepo} = require("./repositories/taskRepo")
 const {createAuthRouter} = require("./routes/auth")
+const {requireAuth} = require("./middlewares/requireAuth");
 
 
 function createApp(prisma) {
@@ -20,8 +21,8 @@ function createApp(prisma) {
     res.json({ ok: true });
   });
   app.use("/auth", createAuthRouter(prisma));
-  app.use("/projects", createProjectRouter(projectRepo, taskRepo));
-  app.use("/tasks", createTasksRouter(taskRepo));
+  app.use("/projects", requireAuth, createProjectRouter(projectRepo, taskRepo));
+  app.use("/tasks", requireAuth, createTasksRouter(taskRepo));
   app.use(errorHandler)
 
   return app;

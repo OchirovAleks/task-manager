@@ -1,31 +1,32 @@
 
 function createProjectRepo(prisma) {
-    const getAll = () => {
+    const getAll = (userId) => {
         return prisma.project.findMany({
+            where: {userId},
             orderBy: { id: "asc" }
         });
     };
 
-    const create = (name) => {
+    const create = (name, userId) => {
         return prisma.project.create({
-            data: { name },
+            data: { name, userId},
         })
     };
 
-    const deleteById = (id) => {
-      return prisma.project.delete({
-        where: { id },
+    const deleteById = (id, userId) => {
+      return prisma.project.deleteMany({
+        where: { id, userId },
       })
     }
-    const updateById = (id, name) => {
-      return prisma.project.update({
-        where: { id },
+    const updateById = (id, name, userId) => {
+      return prisma.project.updateMany({
+        where: { id, userId },
         data: { name },
       })
     }
-    const findById = (id) => {
-      return prisma.project.findUnique({
-        where: { id },
+    const findById = (id, userId) => {
+      return prisma.project.findFirst({
+        where: { id, userId },
       })
     }
 

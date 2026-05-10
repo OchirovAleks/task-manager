@@ -6,7 +6,7 @@ function createProjectRouter(projectRepo, taskRepo) {
 
     router.get("/", async (req, res, next) => {
         try {
-            const projects = await projectRepo.getAll();
+            const projects = await projectRepo.getAll(req.userId);
             return res.json(projects);
         } catch (error) {
             console.error("GET /projects failed:", error);
@@ -26,7 +26,7 @@ function createProjectRouter(projectRepo, taskRepo) {
             return next(createError("Name is required", 400));
         }
         try {
-            const created = await projectRepo.create(cleanName);
+            const created = await projectRepo.create(cleanName, req.userId);
             return res.status(201).json(created)
         } catch (error) {
             console.error("POST /projects failed:", error);
@@ -40,7 +40,10 @@ function createProjectRouter(projectRepo, taskRepo) {
             return next(createError("Invalid project id", 400));
         }
         try {
-            await projectRepo.deleteById(projectId)
+            const deleted = await projectRepo.deleteById(projectId, req.userId)
+            if(deleted.count === 0){
+                return next(createError("Project not found", 404));
+            }
             return res.status(204).send()
         } catch (error) {
             if (error.code === "P2025") {
@@ -65,8 +68,12 @@ function createProjectRouter(projectRepo, taskRepo) {
             return next(createError("Invalid project id", 400))
         }
         try {
-            const updated = await projectRepo.updateById(updatingProjectId, cleanName)
-            return res.status(200).json(updated);
+            const updated = await projectRepo.updateById(updatingProjectId, cleanName, req.userId)
+            if(updated.count === 0){
+                return next(createError("Project not found", 404));
+            }
+            const updatedProject = await projectRepo.findById(updatingProjectId, req.userId)
+            return res.status(200).json(updatedProject);
         } catch (error) {
             if (error.code === "P2025") {
                 return next(createError("Project not found", 404));
@@ -90,9 +97,9 @@ function createProjectRouter(projectRepo, taskRepo) {
             return next(createError("Invalid project id", 400))
         }
         try {
-            const project = await projectRepo.findById(projectIdForTasks)
+            const project = await projectRepo.findById(projectIdForTasks, req.userId)
             if (!project) return next(createError("Project not found", 404))
-            const createdTask = await taskRepo.createInProject(cleanTitle, projectIdForTasks)
+            const createdTask = await taskRepo.createInProject(cleanTitle, projectIdForTasks, req.userId)
             return res.status(201).json(createdTask)
         } catch (error) {
             console.error("POST /tasks failed:", error);
@@ -106,9 +113,9 @@ function createProjectRouter(projectRepo, taskRepo) {
             return next(createError("Invalid project id", 400))
         }
         try {
-            const project = await projectRepo.findById(projectId);
+            const project = await projectRepo.findById(projectId, req.userId);
             if (!project) return next(createError("Project not found", 404))
-            const tasks = await taskRepo.findByProject(projectId)
+            const tasks = await taskRepo.findByProject(projectId, req.userId)
             return res.json(tasks)
         } catch (error) {
             console.error("GET /projects/:projectId/tasks failed:", error);

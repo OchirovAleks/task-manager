@@ -1,14 +1,16 @@
 function createTaskRepo(prisma) {
-    const getAll = () => {
+    const getAll = (userId) => {
         return prisma.task.findMany({
+            where: { userId },
             orderBy: { id: "asc" }
         });
     };
 
-    const createInProject = (title, projectId) => {
+    const createInProject = (title, projectId, userId) => {
         return prisma.task.create({
             data: {
                 title,
+                userId,
                 project: {
                     connect: { id: projectId }
                 }
@@ -16,21 +18,27 @@ function createTaskRepo(prisma) {
         })
     };
 
-    const deleteById = (id) => {
-        return prisma.task.delete({
-            where: { id },
+    const deleteById = (id, userId) => {
+        return prisma.task.deleteMany({
+            where: { id, userId },
         })
     }
-    const updateById = (id, title) => {
-        return prisma.task.update({
-            where: { id },
+    const updateById = (id, title, userId) => {
+        return prisma.task.updateMany({
+            where: { id, userId },
             data: { title },
         })
     }
-    const findByProject = (projectId) => {
+    const findByProject = (projectId, userId) => {
         return prisma.task.findMany({
-            where: { projectId },
+            where: { projectId, userId },
             orderBy: { id: "asc" }
+        });
+    };
+
+    const findById = (id, userId) => {
+        return prisma.task.findFirst({
+            where: { id, userId },
         });
     };
 
@@ -39,7 +47,8 @@ function createTaskRepo(prisma) {
         createInProject,
         deleteById,
         updateById,
-        findByProject
+        findByProject,
+        findById
     };
 }
 

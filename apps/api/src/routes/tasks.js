@@ -4,11 +4,14 @@ const { createError } = require("../utils/createError");
 function createTasksRouter(taskRepo) {
   const router = express.Router();
 
-  router.delete("/:id", async (req, res,next) => {
+  router.delete("/:id", async (req, res, next) => {
     const taskId = Number(req.params.id);
     if (isNaN(taskId)) return next(createError("Invalid task id", 400))
     try {
-      const deleted = await taskRepo.deleteById(taskId)
+      const deleted = await taskRepo.deleteById(taskId, req.userId)
+      if(deleted.count === 0){
+        return next(createError("Task not found", 404));
+      }
       return res.status(204).send()
     } catch (error) {
       if (error.code === "P2025") {
@@ -23,12 +26,16 @@ function createTasksRouter(taskRepo) {
     const id = Number(req.params.id);
     if (isNaN(id)) return next(createError("Invalid task id", 400))
     const { title } = req.body;
-    if(typeof title !== "string") return next(createError("Invalid task title", 400))
+    if (typeof title !== "string") return next(createError("Invalid task title", 400))
     const cleanTitle = title.trim();
     if (!cleanTitle) return next(createError("Invalid task title", 400))
     try {
-      const updated = await taskRepo.updateById(id, cleanTitle)
-      return res.status(200).json(updated)
+      const updated = await taskRepo.updateById(id, cleanTitle, req.userId)
+      if (updated.count === 0) {
+        return next(createError("Task not found", 404));
+      }
+      const updatedTask = await taskRepo.findById(id, req.userId);
+      return res.status(200).json(updatedTask)
     } catch (error) {
       if (error.code === "P2025") {
         return next(createError("Project not found", 404))
