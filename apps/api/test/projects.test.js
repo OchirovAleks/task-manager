@@ -49,7 +49,7 @@ describe("Projects API", () => {
         const setupRes = await request(app).post("/projects").set("Authorization", `Bearer ${token}`).send({ name: "Create project" });
         expect(setupRes.status).toBe(201);
         expect(setupRes.body).toMatchObject({ id: 1, name: "Create project" , userId});
-        const res = await request(app).set("Authorization", `Bearer ${token}`).delete("/projects/1");
+        const res = await request(app).delete("/projects/1").set("Authorization", `Bearer ${token}`);
         expect(res.status).toBe(204);
         const assertRes = await request(app).get("/projects").set("Authorization", `Bearer ${token}`);
         expect(assertRes.status).toBe(200);

@@ -10,10 +10,8 @@ function createTaskRepo(prisma) {
         return prisma.task.create({
             data: {
                 title,
+                projectId,
                 userId,
-                project: {
-                    connect: { id: projectId }
-                }
             }
         })
     };
