@@ -55,6 +55,46 @@ function createProjectRouter(projectRepo, taskRepo) {
     })
 
     router.patch("/:id", async (req, res, next) => {
+    const updatingProjectId = Number(req.params.id);
+    const { name } = req.body;
+
+    if (Number.isNaN(updatingProjectId)) {
+        return next(createError("Invalid project id", 400));
+    }
+
+    if (typeof name !== "string") {
+        return next(createError("Name is required", 400));
+    }
+
+    const cleanName = name.trim();
+
+    if (!cleanName) {
+        return next(createError("Name is required", 400));
+    }
+
+    try {
+        const updated = await projectRepo.updateById(
+            updatingProjectId,
+            cleanName,
+            req.userId
+        );
+
+        if (updated.count === 0) {
+            return next(createError("Project not found", 404));
+        }
+
+        const updatedProject = await projectRepo.findById(
+            updatingProjectId,
+            req.userId
+        );
+
+        return res.status(200).json(updatedProject);
+    } catch (error) {
+        console.error("PATCH /projects failed:", error);
+        next(error);
+    }
+});
+    router.patch("/:id", async (req, res, next) => {
         const updatingProjectId = Number(req.params.id);
         const { name } = req.body;
         if (typeof name !== "string") {

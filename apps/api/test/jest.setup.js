@@ -17,7 +17,7 @@ process.env.NODE_ENV = "test";
 
 beforeEach(async () => {
   await prisma.$executeRawUnsafe(
-    'TRUNCATE TABLE "Task", "Project" RESTART IDENTITY CASCADE;'
+    'TRUNCATE TABLE "Task", "Project", "User" RESTART IDENTITY CASCADE;'
   );
 });
 
