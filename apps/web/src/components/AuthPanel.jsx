@@ -28,6 +28,7 @@ function AuthPanel({
 
                             <input
                                 className="input"
+                                data-testid="email-input"
                                 type="email"
                                 placeholder="Enter email"
                                 value={email}
@@ -42,6 +43,7 @@ function AuthPanel({
 
                             <input
                                 className="input"
+                                data-testid="password-input"
                                 type="password"
                                 placeholder="Enter password"
                                 value={password}
@@ -54,6 +56,7 @@ function AuthPanel({
                         <div className="row authActions">
                             <button
                                 className="btn"
+                                data-testid="register-button"
                                 type="button"
                                 onClick={() => onRegister(email, password)}
                                 disabled={loading}
@@ -63,6 +66,7 @@ function AuthPanel({
 
                             <button
                                 className="btn btnSecondary"
+                                data-testid="login-button"
                                 type="button"
                                 onClick={() => onLogin(email, password)}
                                 disabled={loading}
